@@ -27,7 +27,7 @@ error_code = c_uint(0)
 
 
 handle = epos.VCS_OpenDevice(
-    b"EPOS CAN [Node1]", 
+    b"EPOS4", 
     b"MAXON Serial V2", 
     b"USB", 
     b"USB0", 
