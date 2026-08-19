@@ -2,36 +2,183 @@ from ctypes import *
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
-epos = windll.LoadLibrary(dll_path)
+epos = windll(dll_path)
 
-epos.VCS_OpenDeviceDlg.argtypes = [
-    POINTER(c_uint)
-]
-error_code = c_uint()
-name = create_string_buffer(256)
-version= create_string_buffer(256)
+def list_port_names():
+    buffer = create_string_buffer(256)
+    end = c_int()
+    error = c_uint()
 
-epos.VCS_GetDriverInfo(
-    name,
-    256,
-    version,
-    256,
-    byref(error_code)
-)
-epos.VCS_OpenDeviceDlg.restype = c_ulonglong
-
-epos.VCS_OpenDeviceDlg.argtypes = [
-    POINTER(c_uint)
-]
-
-epos.VCS_OpenDeviceDlg.restype = c_void_p
-
-handle = epos.VCS_OpenDeviceDlg(
-    byref(error_code)
+    result = epos.VCS_GetPortNameSelection(
+        b"EPOS4",
+        b"MAXON SERIAL V2",
+        b"USB",
+        True,
+        buffer,
+        256,
+        byref(end),
+        byref(error)
 )
 
-print("Handle:", handle)
-print("Handletype: ", type(handle))
-print("Error:", error_code.value)
-print("Name: ", name.value.decode(errors="ignore"))
-print("Version: ", version.value.decode(errors="ignore"))
+    while result:
+        print("Port:", buffer.value.decode())
+
+        result = epos.VCS_GetPortNameSelection(
+            b"EPOS4",
+            b"MAXON SERIAL V2",
+            b"USB",
+            False,
+            buffer,
+            256,
+            byref(end),
+            byref(error)
+    )
+
+def list_interfaces():
+    error = c_uint()
+    end = c_int()
+    buffer = create_string_buffer(256)
+
+    # Interface-Namen für USB anzeigen
+
+    result = epos.VCS_GetInterfaceNameSelection(
+        b"EPOS4",
+        b"MAXON SERIAL V2",
+        True,
+        buffer,
+        256,
+        byref(end),
+        byref(error)
+    )
+
+    while result:
+        print("Interface:", buffer.value.decode())
+
+        result = epos.VCS_GetInterfaceNameSelection(
+            b"EPOS4",
+            b"MAXON SERIAL V2",
+            False,
+            buffer,
+            256,
+            byref(end),
+            byref(error)
+        )
+        
+
+def list_protocols():
+    name = create_string_buffer(256)
+    end = c_int()
+    error = c_uint()
+
+    start = 1
+
+    while True:
+
+            result = epos.VCS_GetProtocolStackNameSelection(
+                b"EPOS4",
+                start,
+                name,
+                256,
+                byref(end),
+                byref(error)
+            )
+
+            if result == 0:
+                break
+
+            print("Protocol:", name.value.decode())
+
+            if end.value:
+                break
+
+            start = 0
+
+
+def list_devices():
+    name = create_string_buffer(256)
+    end = c_int()
+    error = c_uint()
+
+    epos.VCS_GetDeviceNameSelection.argtypes = [
+        c_int,
+        c_char_p,
+        c_ushort,
+        POINTER(c_int),
+        POINTER(c_uint)
+    ]
+
+    start = 1
+
+    while True:
+
+        result = epos.VCS_GetDeviceNameSelection(
+            start,
+            name,
+            256,
+            byref(end),
+            byref(error)
+        )
+
+        if result == 0:
+            break
+
+        print("Device:", name.value.decode())
+
+        if end.value:
+            break
+
+        start = 0
+
+
+def find_device():
+    error = c_uint(0)
+
+    device = create_string_buffer(64)
+    protocol = create_string_buffer(64)
+    interface = create_string_buffer(64)
+    port = create_string_buffer(64)
+
+    baudrate = c_uint()
+    timeout = c_uint()
+    nodeid = c_ushort()
+    handle = c_void_p()
+
+    result = epos.VCS_FindDeviceCommunicationSettings(
+        byref(handle),
+        device,
+        protocol,
+        interface,
+        port,
+        64,
+        byref(baudrate),
+        byref(timeout),
+        byref(nodeid),
+        1,
+        byref(error)
+    )
+
+    buffer = create_string_buffer(256)
+
+    epos.VCS_GetErrorInfo(
+        error.value,
+        buffer,
+        256
+    )
+
+    print(buffer.value.decode())
+    print("Result:", result)
+    print("Handle:", handle.value)
+    print("Device:", device.value.decode())
+    print("Protocol:", protocol.value.decode())
+    print("Interface:", interface.value.decode())
+    print("Port:", port.value.decode())
+    print("Baudrate:", baudrate.value)
+    print("NodeID:", nodeid.value)
+    print("Error:", error.value)
+
+
+
+list_devices()
+list_protocols()
+list_interfaces()
+list_port_names()
