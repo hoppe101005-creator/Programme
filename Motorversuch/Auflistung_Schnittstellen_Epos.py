@@ -7,8 +7,8 @@ epos = windll.LoadLibrary(dll_path)
 name = create_string_buffer(256)
 end = c_int()
 
-index = 0
-error_code = c_uint(0)
+index = 1
+error_code = c_uint()
 
 while True:
     result = epos.VCS_GetProtocolStackNameSelection(
@@ -21,5 +21,5 @@ while True:
     if result == 0:
         break
     
-    print(index, "->", name.value.decode())
+    print(index, name.value.decode())
     index += 1

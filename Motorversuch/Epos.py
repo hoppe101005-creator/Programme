@@ -2,7 +2,7 @@ from ctypes import *
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
-epos = windll.LoadLibrary(dll_path)
+epos = cdll.LoadLibrary(dll_path)
 
 print ("Epos Command Library geladen")
 print ("VSC_OpenDevice gefunden: ", hasattr(epos, "VCS_OpenDevice"))
@@ -21,21 +21,22 @@ epos.VCS_OpenDevice.argtypes = [
     POINTER(c_uint)
     ]
 
-epos.VCS_OpenDevice.restype = c_void_p
+epos.VCS_OpenDevice.restype = c_ulonglong
 
 error_code = c_uint(0)
 
-buffer = create_string_buffer(256)
-
-epos.VCS_GetErrorInfo(error_code.value, buffer, 256)
 
 handle = epos.VCS_OpenDevice(
-    b"EPOS4", 
-    b"MAXON SERIAL V2", 
+    b"EPOS CAN [Node1]", 
+    b"MAXON Serial V2", 
     b"USB", 
     b"USB0", 
     byref(error_code)
     )
+
+buffer = create_string_buffer(256)
+
+epos.VCS_GetErrorInfo(error_code.value, buffer, 256)
 
 print ("Handle: ", handle)
 print ("Error code: ", error_code.value)
