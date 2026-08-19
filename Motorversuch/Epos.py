@@ -2,9 +2,10 @@ from ctypes import *
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
-epos = cdll.LoadLibrary(dll_path)
+epos = windll.LoadLibrary(dll_path)
 
 print ("Epos Command Library geladen")
+print(epos.VCS_GetDeviceNameSelection)
 print ("VSC_OpenDevice gefunden: ", hasattr(epos, "VCS_OpenDevice"))
 
 epos.VCS_GetErrorInfo.argtypes = [
