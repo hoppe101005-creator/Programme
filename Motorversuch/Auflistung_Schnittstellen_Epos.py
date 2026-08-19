@@ -10,6 +10,14 @@ end = c_int()
 index = 1
 error_code = c_uint()
 
+epos.VCS_GetProtocolStackNameSelection.argtypes = [
+c_ushort,
+c_char_p,
+c_uint,
+POINTER(c_int),
+POINTER(c_uint)
+]
+
 while True:
     result = epos.VCS_GetProtocolStackNameSelection(
         index,
