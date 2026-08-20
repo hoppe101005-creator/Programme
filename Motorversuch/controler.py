@@ -11,9 +11,12 @@ class controler:
         self.error_code = c_uint(0)
         self.enable = c_int()
         self.node_id = 1
-        self.geschwindigkeit = 500
+        self.geschwindigkeit = 1000
         self.beschleunigung = 10000
         self.verzögerung = 10000
+        self.fault = c_int()
+        self.mode = c_byte()
+        self.reached = c_int()
 
 
     def open_device(self):
@@ -264,7 +267,7 @@ class controler:
     def position_einlesen(self,dokument):
         with open (dokument, "r") as f:
             position = int(f.read())
-            print("Position:", position)
+            print(dokument, position)
             return position
         
     def position_speichern(self, dokument, position):
@@ -273,28 +276,20 @@ class controler:
                 print("Position", position, "wurde in ", dokument, "gespeichert")
                 
     def nse_zu_position_bewegen(self,zielposition):
-        epos.VCS_ActivateProfilePositionMode(
-           self.handle,
-           self.node_id,
-           byref(self.error_code)
-        ) 
-       
-        epos.VCS_SetEnableState(
-            self.handle,
-            self.node_id,
-            byref(self.error_code)
-        )
-
-        epos.VCS_GetEnableState(
-            self.handle,
-            self.node_id,
-            byref(self.enable),
-            byref(self.error_code)
-)
-
-        print("enable Value:",self.enable.value)
+        start_pos = self.aktuelle_position_auslesen()
         
-        epos.VCS_MoveToPosition(
+        print("Startposition",start_pos)
+        print("Zielposition", zielposition)
+        self.aktivieren_controler()
+        self.fahr_parameter_setzen()
+        self.enable_set()
+        self.enable_prüf()
+        self.get_operation_mode()
+        
+        
+        print("Fault:", self.fault_pruef())
+        
+        result = epos.VCS_MoveToPosition(
            self.handle,
            self.node_id,
            zielposition,
@@ -302,5 +297,83 @@ class controler:
            1,
            byref(self.error_code)
         )
-       
+        print("Move Result: ", result)
+        print("Error: ", self.error_code.value)
+        import time
+        time.sleep(2)
         
+        ende_pos = self.aktuelle_position_auslesen()
+        print("Endposition: ", ende_pos)
+       
+    def enable_prüf(self):
+        epos.VCS_GetEnableState(
+            self.handle,
+            self.node_id,
+            byref(self.enable),
+            byref(self.error_code)
+            )
+            
+        print("Enabled:",self.enable.value)
+    
+    def enable_set(self):
+        result = epos.VCS_SetEnableState(
+            self.handle,
+            self.node_id,
+            byref(self.error_code)
+        )
+        
+        print("Enabled:",result)
+        
+    def aktivieren_controler(self):
+        epos.VCS_ActivateProfilePositionMode(
+            self.handle,
+            self.node_id,
+            byref(self.error_code)
+            ) 
+        
+    def fahr_parameter_setzen(self):
+        epos.VCS_SetPositionProfile(
+            self.handle,
+            self.node_id,
+            self.geschwindigkeit,
+            self.beschleunigung,
+            self.verzögerung,
+            byref(self.error_code)
+        )
+        
+    def fault_pruef(self):
+        result = epos.VCS_GetFaultState(
+            self.handle,
+            self.node_id,
+            byref(self.fault),
+            byref(self.error_code)
+        )
+        
+        print("Fault Result", result)
+        print("Fault:", self.fault.value)
+        print("Error:", self.error_code.value)
+        
+        return self.fault.value
+    
+    def get_operation_mode(self):
+        result = epos.VCS_GetOperationMode(
+            self.handle,
+            self.node_id,
+            byref(self.mode),
+            byref(self.error_code)
+        )
+
+        print(" Operationsmodus Result:", result)
+        print("Operationsmodus Mode:", self.mode.value)
+        
+    def farget_reached(self):
+        result = epos.VCS_GetTargetReached(
+            self.handle,
+            self.node_id,
+            byref(self.reached),
+            byref(self.error_code)
+        )
+        
+        print("Targetreached Result: ", result)
+        print("TargetReached: ", self.reached.value)
+        return self.reached.value

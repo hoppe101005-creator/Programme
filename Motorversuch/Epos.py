@@ -5,8 +5,8 @@ end_position_lose = 0
 end_position_gespannt = 0
 position_werkstück_wechsel = 0
 position_speichern =False
-spannen = False
-loesen = True
+spannen = True
+loesen = False
 
 controler = controler()
 
@@ -23,8 +23,10 @@ if position_speichern:
     controler.position_speichern("end_position_gespannt.txt",aktuelle_position)
 if spannen:
     controler.nse_zu_position_bewegen(end_position_gespannt)
+    print("gespannt")
 if loesen:
     controler.nse_zu_position_bewegen(end_position_lose)
+    print("gelöst")
 
 
 

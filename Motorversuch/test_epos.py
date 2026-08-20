@@ -39,3 +39,14 @@ epos.VCS_MoveToPosition(
     1,
     1,
     byref(error_code))
+
+enabled = c_int()
+
+epos.VCS_GetEnableState(
+    handle,
+    node_id,
+    byref(enabled),
+    byref(error_code)
+)
+
+print(enabled.value)
