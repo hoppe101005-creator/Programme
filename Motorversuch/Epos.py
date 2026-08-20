@@ -2,7 +2,7 @@ from ctypes import *
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
-epos = Windll(dll_path)
+epos = WinDLL(dll_path)
 
 print ("Epos Command Library geladen")
 print(epos.VCS_GetDeviceNameSelection)
@@ -40,7 +40,8 @@ buffer = create_string_buffer(256)
 epos.VCS_GetErrorInfo(error_code.value, buffer, 256)
 
 print ("Handle: ", handle)
+print ("Handle repr: ", repr(handle))
+print ("Handle type: ", type(handle))
 print ("Error code: ", error_code.value)
 print ( "Fehlercode: ", buffer.value.decode("latin1"))
 print (buffer.value.decode(errors="ignore"))
-print ("Handle type: ", type(handle))

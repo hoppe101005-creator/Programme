@@ -105,7 +105,7 @@ def list_devices():
     error = c_uint()
 
     epos.VCS_GetDeviceNameSelection.argtypes = [
-        c_int,
+        c_ushort,
         c_char_p,
         c_ushort,
         POINTER(c_int),
@@ -180,9 +180,22 @@ def find_device():
     print("Baudrate:", baudrate.value)
     print("NodeID:", nodeid.value)
     print("Error:", error.value)
+    return error
 
+def fehlercode_ausgeben(error_code):
+    buffer = create_string_buffer(256)
+    
+    epos.VCS_GetErrorInfo(
+        error_code,
+        buffer,
+        256
+    )
 
+    print("Fehlermeldung: ", buffer.value.decode("latin1"))
+    
+    
 print("Der Pfad existiert: ", pruefe_dateipfad(dll_path))
+fehlercode_ausgeben(find_device())
 list_devices()
 list_protocols()
 list_interfaces()
