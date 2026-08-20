@@ -9,7 +9,11 @@ class controler:
     def __init__(self):
         self.handle = None
         self.error_code = c_uint(0)
+        self.enable = c_int()
         self.node_id = 1
+        self.geschwindigkeit = 500
+        self.beschleunigung = 10000
+        self.verzögerung = 10000
 
 
     def open_device(self):
@@ -18,9 +22,10 @@ class controler:
             b"MAXON SERIAL V2",
             b"USB",
             b"USB0",
-            byref(self.error_code)
-            return self.handle
+            byref(self.error_code)     
         )
+        handle = self.handle
+        return self.handle
         
         
     def pruefe_dateipfad(self,dateipfad):
@@ -227,7 +232,7 @@ class controler:
         controler.list_interfaces()
         controler.list_port_names()
         
-    def aktuelle_position_auslesen(self, handle, node_id):
+    def aktuelle_position_auslesen(self):
     #Funktionsdefinition
         epos.VCS_GetPositionIs.argtypes = [
             c_void_p,
@@ -241,8 +246,8 @@ class controler:
         current_position = c_int()
 
         result = epos.VCS_GetPositionIs(
-            handle,
-            node_id,
+            self.handle,
+            self.node_id,
             byref(current_position),
             byref(self.error_code)
         )
@@ -255,18 +260,47 @@ class controler:
             print(f"Fehler: {self.error_code.value}")
         
 
-def gehe_zu_position(self, handle, node_id, position):
-    epos.VCS_MoveToPosition(
-        handle, node_id, position, 1, 1, byref(self.error_code)
-    )
-    
-def position_einlesen(self,dokument):
-    with open (dokument, "r") as f:
-        position = int(f.read())
-        print("Position:", position)
-        return position
-    
-def position_speichern(self, dokument, position):
-    with open(dokument, "w") as f:
-            f.write(str(position))
-            print("Position", position, "wurde in ", dokument, "gespeichert")
+        
+    def position_einlesen(self,dokument):
+        with open (dokument, "r") as f:
+            position = int(f.read())
+            print("Position:", position)
+            return position
+        
+    def position_speichern(self, dokument, position):
+        with open(dokument, "w") as f:
+                f.write(str(position))
+                print("Position", position, "wurde in ", dokument, "gespeichert")
+                
+    def nse_zu_position_bewegen(self,zielposition):
+        epos.VCS_ActivateProfilePositionMode(
+           self.handle,
+           self.node_id,
+           byref(self.error_code)
+        ) 
+       
+        epos.VCS_SetEnableState(
+            self.handle,
+            self.node_id,
+            byref(self.error_code)
+        )
+
+        epos.VCS_GetEnableState(
+            self.handle,
+            self.node_id,
+            byref(self.enable),
+            byref(self.error_code)
+)
+
+        print("enable Value:",self.enable.value)
+        
+        epos.VCS_MoveToPosition(
+           self.handle,
+           self.node_id,
+           zielposition,
+           1,
+           1,
+           byref(self.error_code)
+        )
+       
+        

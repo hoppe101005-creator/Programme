@@ -4,36 +4,28 @@ from controler import controler
 end_position_lose = 0
 end_position_gespannt = 0
 position_werkstück_wechsel = 0
-dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
+position_speichern =False
+spannen = False
+loesen = True
 
-epos = WinDLL(dll_path)
-
-print ("Epos Command Library geladen")
-print(epos.VCS_GetDeviceNameSelection)
-print ("VSC_OpenDevice gefunden: ", hasattr(epos, "VCS_OpenDevice"))
-
-epos.VCS_GetErrorInfo.argtypes = [
-    c_uint,
-    c_char_p,
-    c_uint
-]
-
-epos.VCS_OpenDevice.argtypes = [
-    c_char_p, 
-    c_char_p, 
-    c_char_p, 
-    c_char_p, 
-    POINTER(c_uint)
-    ]
-
-epos.VCS_OpenDevice.restype = c_ulonglong
-
-error_code = c_uint(0)
-
+controler = controler()
 
 handle = controler.open_device()
 
-node_id = 1
+end_position_lose = controler.position_einlesen("end_position_lose.txt")
+end_position_gespannt = controler.position_einlesen("end_position_gespannt.txt")
+
+print("Endposition lose: ", end_position_lose)
+print("Endposition gespannt: ", end_position_gespannt)
+aktuelle_position = controler.aktuelle_position_auslesen()
+
+if position_speichern:
+    controler.position_speichern("end_position_gespannt.txt",aktuelle_position)
+if spannen:
+    controler.nse_zu_position_bewegen(end_position_gespannt)
+if loesen:
+    controler.nse_zu_position_bewegen(end_position_lose)
+
 
 
             
