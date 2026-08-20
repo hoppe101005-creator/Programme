@@ -19,14 +19,15 @@ class controler:
             b"USB",
             b"USB0",
             byref(self.error_code)
+            return self.handle
         )
         
         
-    def pruefe_dateipfad(dateipfad):
+    def pruefe_dateipfad(self,dateipfad):
         return Path(dateipfad).exists()
 
 
-    def list_port_names():
+    def list_port_names(self):
         buffer = create_string_buffer(256)
         end = c_int()
         error = c_uint()
@@ -56,7 +57,7 @@ class controler:
                 byref(error)
         )
 
-    def list_interfaces():
+    def list_interfaces(self):
         error = c_uint()
         end = c_int()
         buffer = create_string_buffer(256)
@@ -87,7 +88,7 @@ class controler:
             )
             
 
-    def list_protocols():
+    def list_protocols(self):
         name = create_string_buffer(256)
         end = c_int()
         error = c_uint()
@@ -116,7 +117,7 @@ class controler:
                 start = 0
 
 
-    def list_devices():
+    def list_devices(self):
         name = create_string_buffer(256)
         end = c_int()
         error = c_uint()
@@ -152,7 +153,7 @@ class controler:
             start = 0
 
 
-    def find_device():
+    def find_device(self):
         error = c_uint(0)
 
         device = create_string_buffer(64)
@@ -199,18 +200,17 @@ class controler:
         print("Error:", error.value)
         return error
 
-    def fehlercode_ausgeben(error_code):
+    def fehlercode_ausgeben(self):
         buffer = create_string_buffer(256)
         
         epos.VCS_GetErrorInfo(
-            error_code,
+            self.error_code,
             buffer,
             256
         )
-
         print("Fehlermeldung: ", buffer.value.decode("latin1"))
         
-    def rueckgabe():
+    def rueckgabe(self):
         error_code = c_uint(0)
         buffer = create_string_buffer(256)
         epos.VCS_GetErrorInfo(error_code.value, buffer, 256)
@@ -226,3 +226,47 @@ class controler:
         controler.list_protocols()
         controler.list_interfaces()
         controler.list_port_names()
+        
+    def aktuelle_position_auslesen(self, handle, node_id):
+    #Funktionsdefinition
+        epos.VCS_GetPositionIs.argtypes = [
+            c_void_p,
+            c_ushort,
+            POINTER(c_int),
+            POINTER(c_uint)
+        ]
+
+        epos.VCS_GetPositionIs.restype = c_int
+
+        current_position = c_int()
+
+        result = epos.VCS_GetPositionIs(
+            handle,
+            node_id,
+            byref(current_position),
+            byref(self.error_code)
+        )
+
+        if result:
+            position = current_position.value
+            print(f"Aktuelle Position: {position}")
+            return position
+        else:
+            print(f"Fehler: {self.error_code.value}")
+        
+
+def gehe_zu_position(self, handle, node_id, position):
+    epos.VCS_MoveToPosition(
+        handle, node_id, position, 1, 1, byref(self.error_code)
+    )
+    
+def position_einlesen(self,dokument):
+    with open (dokument, "r") as f:
+        position = int(f.read())
+        print("Position:", position)
+        return position
+    
+def position_speichern(self, dokument, position):
+    with open(dokument, "w") as f:
+            f.write(str(position))
+            print("Position", position, "wurde in ", dokument, "gespeichert")

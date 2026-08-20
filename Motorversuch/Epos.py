@@ -1,5 +1,5 @@
 from ctypes import *
-import keyboard
+from controler import controler
 
 end_position_lose = 0
 end_position_gespannt = 0
@@ -31,61 +31,11 @@ epos.VCS_OpenDevice.restype = c_ulonglong
 error_code = c_uint(0)
 
 
-handle = epos.VCS_OpenDevice(
-    b"EPOS4", 
-    b"MAXON Serial V2", 
-    b"USB", 
-    b"USB0", 
-    byref(error_code)
-    )
+handle = controler.open_device()
 
 node_id = 1
-def aktuelle_position_auslesen(handle, node_id):
-    #Funktionsdefinition
-    epos.VCS_GetPositionIs.argtypes = [
-        c_void_p,
-        c_ushort,
-        POINTER(c_int),
-        POINTER(c_uint)
-    ]
 
-    epos.VCS_GetPositionIs.restype = c_int
 
-    current_position = c_int()
-
-    result = epos.VCS_GetPositionIs(
-        handle,
-        node_id,
-        byref(current_position),
-        byref(error_code)
-    )
-
-    if result:
-        position = current_position.value
-        print(f"Aktuelle Position: {position}")
-        return position
-    else:
-        print(f"Fehler: {error_code.value}")
-    
-
-def gehe_zu_position(handle, node_id, position):
-    epos.VCS_MoveToPosition(
-        handle, node_id, position, 1, 1, byref(error_code)
-    )
-    
-def position_einlesen(dokument):
-    with open (dokument, "r") as f:
-        position = int(f.read())
-        print("Position:", position)
-        return position
-    
-def position_speichern(dokument, position):
-    with open(dokument, "w") as f:
-            f.write(str(position))
-            print("Position", position, "wurde in ", dokument, "gespeichert")
             
 
 
-if 
-    end_position_lose = aktuelle_position_auslesen(handle, node_id)
-    position_speichern("end_position_lose.txt", end_position_lose)
