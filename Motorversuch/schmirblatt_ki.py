@@ -1,8 +1,13 @@
+import ctypes
 from ctypes import *
+from pathlib import Path
 
-dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS4\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
+dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS2\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
-epos = windll(dll_path)
+epos = ctypes.WinDLL(dll_path)
+
+def pruefe_dateipfad(dateipfad):
+    return Path(dateipfad).exists()
 
 def list_port_names():
     buffer = create_string_buffer(256)
@@ -177,7 +182,7 @@ def find_device():
     print("Error:", error.value)
 
 
-
+print("Der Pfad existiert: ", pruefe_dateipfad(dll_path))
 list_devices()
 list_protocols()
 list_interfaces()
