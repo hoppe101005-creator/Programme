@@ -11,7 +11,7 @@ class controler:
         self.error_code = c_uint(0)
         self.enable = c_int()
         self.node_id = 1
-        self.geschwindigkeit = 1000
+        self.geschwindigkeit = 500
         self.beschleunigung = 10000
         self.verzögerung = 10000
         self.fault = c_int()

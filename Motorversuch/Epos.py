@@ -1,12 +1,20 @@
 from ctypes import *
 from controler import controler
 
+"""850 Schritte zwischen anfangs und endlage"""
+""""""
+"""       .   Auf   .   Zu    """
+"""  ACT  .    +    .    -    """
+"""  Fau  .    -    .    +    """
+""""""
+
 end_position_lose = 0
 end_position_gespannt = 0
 position_werkstück_wechsel = 0
 position_speichern =False
-spannen = True
-loesen = False
+spannen = False
+werkstück = False
+loesen = True
 
 controler = controler()
 
@@ -24,6 +32,9 @@ if position_speichern:
 if spannen:
     controler.nse_zu_position_bewegen(end_position_gespannt)
     print("gespannt")
+if loesen:
+    controler.nse_zu_position_bewegen(position_werkstück_wechsel)
+    print("wechsel")
 if loesen:
     controler.nse_zu_position_bewegen(end_position_lose)
     print("gelöst")
