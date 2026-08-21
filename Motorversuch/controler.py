@@ -1,6 +1,7 @@
 import ctypes
 from ctypes import *
 from pathlib import Path
+import subprocess
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS2\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
@@ -17,7 +18,10 @@ class controler:
         self.fault = c_int()
         self.mode = c_byte()
         self.reached = c_int()
-
+        self.position_geschlossen = 0                    ### Position, an der das NSE komplett geschlossen ist
+        self.end_position_lose = 0                       ### Position, an der das NSE komplett geöffnet ist
+        self.end_position_gespannt = 0                   ### Position, an der das NSE spannt
+        self.position_werkstück_wechsel = 0
 
     def open_device(self):
         self.handle = epos.VCS_OpenDevice(
@@ -29,11 +33,9 @@ class controler:
         )
         handle = self.handle
         return self.handle
-        
-        
+          
     def pruefe_dateipfad(self,dateipfad):
         return Path(dateipfad).exists()
-
 
     def list_port_names(self):
         buffer = create_string_buffer(256)
@@ -94,8 +96,7 @@ class controler:
                 byref(end),
                 byref(error)
             )
-            
-
+           
     def list_protocols(self):
         name = create_string_buffer(256)
         end = c_int()
@@ -123,7 +124,6 @@ class controler:
                     break
 
                 start = 0
-
 
     def list_devices(self):
         name = create_string_buffer(256)
@@ -159,7 +159,6 @@ class controler:
                 break
 
             start = 0
-
 
     def find_device(self):
         error = c_uint(0)
@@ -261,21 +260,20 @@ class controler:
             return position
         else:
             print(f"Fehler: {self.error_code.value}")
-        
-
-        
+         
     def position_einlesen(self,dokument):
         with open (dokument, "r") as f:
             position = int(f.read())
             print(dokument, position)
             return position
         
-    def position_speichern(self, dokument, position):
+    def position_speichern(self, position, dokument):
         with open(dokument, "w") as f:
                 f.write(str(position))
                 print("Position", position, "wurde in ", dokument, "gespeichert")
                 
     def nse_zu_position_bewegen(self,zielposition):
+        self.konsole_leeren
         start_pos = self.aktuelle_position_auslesen()
         
         print("Startposition",start_pos)
@@ -303,6 +301,14 @@ class controler:
         time.sleep(2)
         
         ende_pos = self.aktuelle_position_auslesen()
+        if zielposition == self.end_position_lose:
+            self.position_speichern(zielposition, "end_position_lose.txt")
+        if zielposition == self.end_position_gespannt:
+            self.position_speichern(zielposition, "end_position_gespannt.txt")
+        if zielposition == self.position_werkstück_wechsel:
+            self.position_speichern(zielposition, "position_werkstück_wechsel.txt")
+        if zielposition == self.position_geschlossen:
+                    self.position_speichern(zielposition, "position_geschlossen.txt")
         print("Endposition: ", ende_pos)
        
     def enable_prüf(self):
@@ -377,3 +383,6 @@ class controler:
         print("Targetreached Result: ", result)
         print("TargetReached: ", self.reached.value)
         return self.reached.value
+    
+    def konsole_leeren(self):
+        print("\033c", end="")
