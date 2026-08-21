@@ -11,9 +11,10 @@ from controler import controler
 end_position_lose = 0
 end_position_gespannt = 0
 position_werkstück_wechsel = 0
+wahl = True
 position_speichern =False
 spannen = False
-werkstück = True
+werkstück = False
 loesen = False
 
 controler = controler()
@@ -27,6 +28,18 @@ print("Endposition lose: ", end_position_lose)
 print("Endposition gespannt: ", end_position_gespannt)
 aktuelle_position = controler.aktuelle_position_auslesen()
 
+Wahl = input("Bitte wählen, was zu tun ist: 1-4(Pos. speichern, Spannen, Werkstk.,öffnen)")
+
+if wahl == True:
+    if Wahl == 1:
+        position_speichern =True
+    if Wahl == 2:
+        spannen = True
+    if Wahl == 3:
+        werkstück = True
+    if Wahl == 4:
+        loesen = True
+print("")
 if position_speichern:
     controler.position_speichern("end_position_gespannt.txt",aktuelle_position)
 if spannen:
