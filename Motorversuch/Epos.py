@@ -24,19 +24,19 @@ lage_motor = abfragen.frage_motor_lage()
 print (lage_motor)
 gespeicherte_Werte_einlesen = True          ### Abfrage, ob gespeicherte Werte eingelesen werden sollen
 
-position_speichern = False                  ### Abfrage, ob die aktuelle Position gespeichert werden soll
-schliessen = False                          ### Abfrage, ob das NSE ganz schließen soll soll
-spannen = True                             ### Abfrage, ob das NSE in Spannposition fahren soll
-werkstück = True                          ### Abfrage, ob das NSE in Wechselposition fahren soll
-loesen = False                               ### Abfrage, ob das NSE ganz öffnen soll
+position_speichern = abfragen.bool_setzen("Soll die Anfangsposition gespeichert werden?")                  ### Abfrage, ob die aktuelle Position gespeichert werden soll
+schliessen = abfragen.bool_setzen("Soll das NSE auf die Position Schliessen fahren?")                      ### Abfrage, ob das NSE ganz schließen soll soll
+spannen = abfragen.bool_setzen("Soll das NSE auf die Position Spannen fahren?")                            ### Abfrage, ob das NSE in Spannposition fahren soll
+werkstück = abfragen.bool_setzen("Soll das NSE auf die Position Wechsel fahren?")                          ### Abfrage, ob das NSE in Wechselposition fahren soll
+loesen = abfragen.bool_setzen("Soll das NSE auf die Position Geöffnet fahren?")                            ### Abfrage, ob das NSE ganz öffnen soll
 
-controler.geschwindigkeit = 1500             ### Eingabe der Drehzahl
-controler.beschleunigung = 10000             ### Eingabe der Beschleunigung
-controler.verzögerung = 500                  ### Eingabe der Verzögerung
+controler.geschwindigkeit = abfragen.frage_int("Mit welcher Drehzahl soll sich der Motor drehen?")         ### Eingabe der Drehzahl
+controler.beschleunigung = abfragen.frage_int("Wie schnell soll der Motor beschleunigen?")                 ### Eingabe der Beschleunigung
+controler.verzögerung = abfragen.frage_int("Wie schnell soll der Motor bremsen?")                          ### Eingabe der Verzögerung
 
 handle = controler.open_device()
 
-for i in range(20):
+for i in range(int(input("Wie viele Zyklen sollen gefahren werden?"))):
     if gespeicherte_Werte_einlesen:
         controler.end_position_lose = lage_motor[0]
         controler.end_position_gespannt = lage_motor[2]

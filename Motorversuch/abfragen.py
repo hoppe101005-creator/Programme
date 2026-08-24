@@ -1,5 +1,5 @@
 """ACT Abstand zwischen Positionen"""
-ACT_offen_wechsel = 65
+ACT_offen_wechsel = 60
 ACT_offen_spannen = 830
 ACT_offen_geschlossen = 850
 
@@ -37,3 +37,25 @@ class abfragen():
                     eingabe = False
                     print("falsche Eingabe")
         return self.absolute_position
+    
+    def bool_setzen(self, frage):
+        eingabe = False
+        while not eingabe:
+            antwort =input(frage + "(Ja/Nein)")
+            if antwort == "Ja" or antwort =="ja":
+                eingabe = True
+                return True
+            if antwort == "Nein" or antwort == "nein":
+                eingabe = True
+                return False
+            else:
+                print ("Falsche Eingabe")
+    
+    def frage_int(self, frage):
+         eingabe = False
+         while not eingabe:
+            antwort =int(input(frage + "(Nennen sie eine Zahl)"))
+            if type(antwort) == int:
+                return antwort
+            else:
+                print ("Falsche Eingabe")
