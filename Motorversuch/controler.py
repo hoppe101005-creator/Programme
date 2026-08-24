@@ -1,7 +1,6 @@
 import ctypes
 from ctypes import *
 from pathlib import Path
-import subprocess
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS2\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
@@ -32,7 +31,8 @@ class controler:
             byref(self.error_code)     
         )
         handle = self.handle
-        return self.handle
+        epos.VCS_OpenDevice.restype = c_void_p
+        return handle
           
     def pruefe_dateipfad(self,dateipfad):
         return Path(dateipfad).exists()
@@ -273,7 +273,7 @@ class controler:
                 print("Position", position, "wurde in ", dokument, "gespeichert")
                 
     def nse_zu_position_bewegen(self,zielposition, geschwindigkeit,beschleunigung, verzoegerung):
-        self.konsole_leeren
+        self.konsole_leeren()
         start_pos = self.aktuelle_position_auslesen()
         
         print("Startposition",start_pos)
@@ -297,8 +297,6 @@ class controler:
         )
         print("Move Result: ", result)
         print("Error: ", self.error_code.value)
-        import time
-        time.sleep(2)
         
         ende_pos = self.aktuelle_position_auslesen()
         if zielposition == self.end_position_lose:
@@ -390,3 +388,30 @@ class controler:
     
     def konsole_leeren(self):
         print("\033c", end="")
+        
+    def aktuelle_drehzahl_auslesen(self):
+        epos.VCS_GetVelocityIs.argtypes = [
+            c_void_p,
+            c_ushort,
+            POINTER(c_int),
+            POINTER(c_uint)
+        ]
+
+        epos.VCS_GetVelocityIs.restype = c_int
+
+        current_velocity = c_int()
+
+        result = epos.VCS_GetVelocityIs(
+            self.handle,
+            self.node_id,
+            byref(current_velocity),
+            byref(self.error_code)
+        )
+
+        if result:
+            print("Aktuelle Drehzahl:", current_velocity.value, "rpm")
+            return current_velocity.value
+        else:
+            print("Fehler:", self.error_code.value)
+            return None
+        

@@ -253,6 +253,7 @@ while running:
     # Ergebnis
     #
     elif screen_state == 6:
+        aktuelle_drehzahl = epos.get_drehzahl()
 
         titel = font.render(
             "Um das NSE auf die Position zu bewegen, bitte Button drücken",
@@ -296,12 +297,19 @@ while running:
             True,
             (255, 255, 255)
         )
-                        
+        
+        info6 = font.render(
+            f"Drehzahl:{aktuelle_drehzahl}",
+            True,
+            (255,255,255)    
+        )   
+                    
         screen.blit(info1, (620, 150))
         screen.blit(info2, (620, 190))
         screen.blit(info3, (620, 230))
         screen.blit(info4, (620, 270))
         screen.blit(info5, (620, 310))
+        screen.blit(info6, (620, 350))
         
                         
 
