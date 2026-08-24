@@ -45,18 +45,6 @@
 						<Height>572</Height>
 					</Position>
 				</ControlWindow>
-				<ControlWindow>
-					<Name>Data Recorder - EPOS4 CAN [Node 1]</Name>
-					<SystemTag>A753DF89-431C-4c6e-9875-2409D44D9387</SystemTag>
-					<FunctionId>50331648</FunctionId>
-					<InvokeId>F4118F50-CD42-48e2-85D3-74AB742D5B64</InvokeId>
-					<Position>
-						<XPosition>0</XPosition>
-						<YPosition>0</YPosition>
-						<Width>1110</Width>
-						<Height>377</Height>
-					</Position>
-				</ControlWindow>
 			</WindowInformation>
 		</Project>
 	</Container>
@@ -84,7 +72,7 @@
 						<Interface>USB</Interface>
 						<Port>USB0</Port>
 						<Baudrate>1000000</Baudrate>
-						<Timeout>100</Timeout>
+						<Timeout>475</Timeout>
 					</Parameters>
 					<NetworkScanning>
 						<ScanningSetting>
@@ -252,6 +240,225 @@
 								<HighValue>127</HighValue>
 							</Range>
 						</CANopenStdScanningMethod>
+						<CANopenLssScanningMethod>
+							<Enabled>1</Enabled>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>IDX56</ProductName>
+								<ProductCode>0x67510000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>IDX70</ProductName>
+								<ProductCode>0x66500000</ProductCode>
+								<RevisionNumberLow>0x01700000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>mcd Epos 60W</ProductName>
+								<ProductCode>0x66100000</ProductCode>
+								<RevisionNumberLow>0x20310000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Module 24/1.5</ProductName>
+								<ProductCode>0x60500000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Module 50/5</ProductName>
+								<ProductCode>0x61500000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 50/5</ProductName>
+								<ProductCode>0x63500000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 70/15</ProductName>
+								<ProductCode>0x64500000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Module 50/8</ProductName>
+								<ProductCode>0x65510000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Module 50/15</ProductName>
+								<ProductCode>0x65520000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Micro 24/5</ProductName>
+								<ProductCode>0x68500000</ProductCode>
+								<RevisionNumberLow>0x01600000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Disc 60/8</ProductName>
+								<ProductCode>0x6A500000</ProductCode>
+								<RevisionNumberLow>0x01700000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos4 Disc 60/12</ProductName>
+								<ProductCode>0x6B500000</ProductCode>
+								<RevisionNumberLow>0x01700000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 24/2</ProductName>
+								<ProductCode>0x60200000</ProductCode>
+								<RevisionNumberLow>0x21210000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 Module 36/2</ProductName>
+								<ProductCode>0x61200000</ProductCode>
+								<RevisionNumberLow>0x21000000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 24/5</ProductName>
+								<ProductCode>0x62200000</ProductCode>
+								<RevisionNumberLow>0x21110000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 50/5</ProductName>
+								<ProductCode>0x63220000</ProductCode>
+								<RevisionNumberLow>0x21000000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 70/10</ProductName>
+								<ProductCode>0x64200000</ProductCode>
+								<RevisionNumberLow>0x21200000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+							<Product>
+								<Enabled>1</Enabled>
+								<Default>1</Default>
+								<VendorName>maxon motor ag</VendorName>
+								<VendorId>0x000000FB</VendorId>
+								<ProductName>Epos2 P 24/5</ProductName>
+								<ProductCode>0x73100000</ProductCode>
+								<RevisionNumberLow>0x01000000</RevisionNumberLow>
+								<RevisionNumberHigh>0xFFFFFFFF</RevisionNumberHigh>
+								<SerialNumberLow>0x00000000</SerialNumberLow>
+								<SerialNumberHigh>0xFFFFFFFF</SerialNumberHigh>
+							</Product>
+						</CANopenLssScanningMethod>
 					</NetworkScanning>
 				</Channel>
 			</DeviceTypeSettings>
@@ -259,11 +466,6 @@
 				<Control>
 					<InvokeId>C54C098A-716E-451c-8E2A-B70960D00D04</InvokeId>
 					<FunctionId>83886080</FunctionId>
-					<Configuration/>
-				</Control>
-				<Control>
-					<InvokeId>F4118F50-CD42-48e2-85D3-74AB742D5B64</InvokeId>
-					<FunctionId>50331648</FunctionId>
 					<Configuration/>
 				</Control>
 			</Controls>

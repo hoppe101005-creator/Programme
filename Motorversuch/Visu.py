@@ -1,94 +1,330 @@
-import tkinter  as tk
-from tkinter import ttk
-import controler
+import pygame
+from Epos import epos
 
-controler = controler()
+pygame.init()
+epos = epos()
+# Fenster
+WIDTH = 1000
+HEIGHT = 600
 
-root = tk.Tk()
-root.title("Steuerung Motorversuch NSE-E mini 90-25 IOL")
-root.geometry("800x600")
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Motorversuch")
 
-Drehzahl = tk.IntVar(value=1000)
-Beschlaeunigung = tk.IntVar(value=5000)
-Bremsen = tk.IntVar(value=5000)
+font = pygame.font.Font(None, 40)
 
-Offen = controler.position_einlesen("end_position_lose.txt")
-Spannen = controler.position_einlesen("end_position_gespannt.txt")
-Werkstück = controler.position_einlesen("position_werkstück_wechsel.txt")
+# Zustände
+screen_state = 1
 
-tk.Label(root, text = "Drehzahl").grid(row=0, column=0)
-Drehzahl = tk.Entry(root)
-Drehzahl.insert(0, "2000")
-Drehzahl.grid(row = 0, column = 1)
+# Daten
+auswahl1 = ""
+auswahl2 = ""
 
-tk.Label(root, text = "Beschläunigung").grid(row=1, column=0)
-Beschlaeunigung = tk.Entry(root)
-Beschlaeunigung.insert(0, "10000")
-Beschlaeunigung.grid(row = 1, column = 1)
+antwort1 = ""
+antwort2 = ""
+antwort3 = ""
 
-tk.Label(root, text = "Bremsen").grid(row=2, column=0)
-Bremsen = tk.Entry(root)
-Bremsen.insert(0, "10000")
-Bremsen.grid(row = 2, column = 1)
+eingabetext = ""
+active = False
 
-def parameter_übernehmen():
-    controler.geschwindigkeit = int(Drehzahl.get())
-    controler.beschleunigung = int(Beschlaeunigung.get())
-    controler.verzögerung = int(Bremsen.get())
-    print("Neue Parameter gesetzt")
-    
-    
-def fahre_zu_position(position):
-    parameter_übernehmen()
-    controler.nse_zu_position_bewegen(position)
-
-def fahren(position):
-    vel = Drehzahl.get()
-    acc = Beschlaeunigung.get()
-    dec = Bremsen.get()
-    
-    print ("Fahre nach", position, "mit v=", vel, ",a=", acc, ", d=", dec)
-    
-    fahre_zu_position(position)
-    
-    
-offen = ttk.Button(
-    root,
-    text = "Offen",
-    command = lambda: fahren(Offen)
+# Eingabefeld
+input_box = pygame.Rect(
+    WIDTH//2-200,
+    300, 
+    400, 
+    50
 )
 
-offen.grid(row = 4, column = 0, pady = 20)
-    
-    
-werkstück = ttk.Button(
-    root,
-    text = "Werkstück",
-    command = lambda: fahren(Werkstück)
-)
+# Buttons
+buttons = [
+    pygame.Rect(100, 150, 250, 60),
+    pygame.Rect(100, 250, 250, 60),
+    pygame.Rect(100, 350, 250, 60),
+    pygame.Rect(100, 450, 250, 60)
+]
 
-werkstück.grid(row = 4, column = 1, pady = 20)
+motoren = [
+    "ACT", 
+    "DeltaLine", 
+    "Faulhaber", 
+    "Maxon"
+]
 
-spannen = ttk.Button(
-    root,
-    text = "Spannen",
-    command = lambda: fahren(Spannen)
-)
+positionen = [
+    "Offen",
+    "Wechsel",
+    "Gespannt",
+    "Geschlossen"
+]
 
-spannen.grid(row = 4, column = 2, pady = 20)
+running = True
 
-position_Label = tk.label(root, text="Position:---")
+while running:
 
-position_Label.grid(row=5, column=0, columnspan=3)
+    for event in pygame.event.get():
 
+        if event.type == pygame.QUIT:
+            running = False
 
-def position_aktualisieren():
-    pos = controler.aktuelle_position_auslesen()
-    position_Label.config(text=f"Position: {pos}")
-    root.after(500, position_aktualisieren)
+        # -------------------
+        # Mausklicks
+        # -------------------
+        if event.type == pygame.MOUSEBUTTONDOWN:
 
+            # Bildschirm 1
+            if screen_state == 1:
+                for i, button in enumerate(buttons):
+                    if button.collidepoint(event.pos):
+                        auswahl1 = motoren[i]
+                        print(motoren[i])
+                        screen_state = 2
 
+            # Bildschirm 2
+            elif screen_state == 2:
+                for i, button in enumerate(buttons):
+                    if button.collidepoint(event.pos):
+                        auswahl2 = positionen[i]
+                        print(motoren[i])
+                        screen_state = 3
 
-controler.open_device()
-position_aktualisieren()
-root.mainloop()
+            # Fragen
+            elif screen_state in [3, 4, 5]:
+                active = input_box.collidepoint(event.pos)
+
+            # Ergebnis
+            elif screen_state == 6:
+                for i, button in enumerate(buttons):
+                    if button.collidepoint(event.pos):
+                        epos.programmablauf(auswahl1, auswahl2, positionen[i], antwort1, antwort2, antwort3)
+
+        # -------------------
+        # Tastatur
+        # -------------------
+        if event.type == pygame.KEYDOWN and active:
+
+            if event.key == pygame.K_BACKSPACE:
+                eingabetext = eingabetext[:-1]
+
+            elif event.key == pygame.K_RETURN:
+                
+                if eingabetext.strip() !="" and int(eingabetext) > 0:
+                    if screen_state == 3:
+                        antwort1 = int(eingabetext)
+                        eingabetext = ""
+                        screen_state = 4
+
+                    elif screen_state == 4:
+                        antwort2 = int(eingabetext)
+                        eingabetext = ""
+                        screen_state = 5
+
+                    elif screen_state == 5:
+                        antwort3 = int(eingabetext)
+                        eingabetext = ""
+                        screen_state = 6
+
+            else:
+                # Nur Zahlen zulassen
+                if event.unicode.isdigit():
+                    eingabetext += event.unicode
+
+    # -------------------
+    # Zeichnen
+    # -------------------
+    screen.fill((0, 61, 106))
+
+    #
+    # Bildschirm 1
+    #
+    if screen_state == 1:
+
+        titel = font.render(
+            "Welcher Motor soll angesteuert werden?", True, (255, 255, 255)
+        )
+        screen.blit(titel, (100, 50))
+
+        for i, button in enumerate(buttons):
+            pygame.draw.rect(screen, (0, 158, 224), button)
+
+            txt = font.render(
+                motoren[i],
+                True,
+                (255, 255, 255)
+            )
+
+            screen.blit(
+                txt,
+                (button.x + 20, button.y + 15)
+            )
+
+    #
+    # Bildschirm 2
+    #
+    elif screen_state == 2:
+
+        titel = font.render(
+            "In welcher Lage befindet sich das NSE?",
+            True,
+            (255, 255, 255)
+        )
+
+        screen.blit(titel, (250, 50))
+
+        for i, button in enumerate(buttons):
+            pygame.draw.rect(screen, (0, 158, 224), button)
+
+            txt = font.render(
+                positionen[i],
+                True,
+                (255, 255, 255)
+            )
+
+            screen.blit(
+                txt,
+                (button.x + 20, button.y + 15)
+            )
+
+    #
+    # Frage 1
+    #
+    elif screen_state == 3:
+
+        frage = font.render(
+            "Geben Sie eine Motordrehzahl ein:",
+            True,
+            (255, 255, 255)
+        )
+
+        frage_mittig = frage.get_rect(center = (WIDTH //2,200))
+        screen.blit(frage, frage_mittig)
+
+    #
+    # Frage 2
+    #
+    elif screen_state == 4:
+
+        frage = font.render(
+            "Geben Sie eine Beschleunigung ein:",
+            True,
+            (255, 255, 255)
+        )
+        frage_mittig = frage.get_rect(center = (WIDTH //2,200))
+        screen.blit(frage, frage_mittig)
+
+    #
+    # Frage 3
+    #
+    elif screen_state == 5:
+
+        frage = font.render(
+            "Geben Sie eine Verzögerung ein:",
+            True,
+            (255, 255, 255)
+        )
+
+        frage_mittig = frage.get_rect(center = (WIDTH //2,200))
+        screen.blit(frage, frage_mittig)
+
+    #
+    # Eingabefeld zeichnen
+    #
+    if screen_state in [3, 4, 5]:
+
+        color = (188, 207, 0) if active else (227, 227, 227)
+
+        pygame.draw.rect(
+            screen,
+            color,
+            input_box,
+            2
+        )
+
+        txt_surface = font.render(
+            eingabetext,
+            True,
+            (255, 255, 255)
+        )
+
+        screen.blit(
+            txt_surface,
+            (input_box.x + 10, input_box.y + 10)
+        )
+
+    #
+    # Ergebnis
+    #
+    elif screen_state == 6:
+
+        titel = font.render(
+            "Um das NSE auf die Position zu bewegen, bitte Button drücken",
+            True,
+            (255, 255, 255)
+        )
+
+        screen.blit(titel, (100, 50))
+        
+        # Infobox
+        info_box = pygame.Rect(600,130,320,300)
+        pygame.draw.rect(screen, (0, 158, 224), info_box)
+        pygame.draw.rect(screen, (188, 207, 0), info_box, 2)
+                        
+        info1 = font.render(
+            f"Motor: {auswahl1}",
+            True,
+            (255, 255, 255)
+        )
+        
+        info2 = font.render(
+            f"Startposition: {auswahl2}",
+            True,
+            (255, 255, 255)
+        )
+        
+        info3 = font.render(
+            f"Drehzahl: {antwort1}",
+            True,
+            (255, 255, 255)
+        )
+        
+        info4 = font.render(
+            f"Beschl.: {antwort2}",
+            True,
+            (255, 255, 255)
+        )
+        
+        info5 = font.render(
+            f"Verzög.: {antwort3}",
+            True,
+            (255, 255, 255)
+        )
+                        
+        screen.blit(info1, (620, 150))
+        screen.blit(info2, (620, 190))
+        screen.blit(info3, (620, 230))
+        screen.blit(info4, (620, 270))
+        screen.blit(info5, (620, 310))
+        
+                        
+
+        for i, button in enumerate(buttons):
+
+            pygame.draw.rect(
+                screen,
+                (0, 158, 224),
+                button
+            )
+
+            txt = font.render(
+                positionen[i],
+                True,
+                (255, 255, 255)
+            )
+
+            screen.blit(
+                txt,
+                (button.x + 20,
+                 button.y + 15)
+            )
+
+    pygame.display.flip()
+
+pygame.quit()

@@ -272,14 +272,14 @@ class controler:
                 f.write(str(position))
                 print("Position", position, "wurde in ", dokument, "gespeichert")
                 
-    def nse_zu_position_bewegen(self,zielposition):
+    def nse_zu_position_bewegen(self,zielposition, geschwindigkeit,beschleunigung, verzoegerung):
         self.konsole_leeren
         start_pos = self.aktuelle_position_auslesen()
         
         print("Startposition",start_pos)
         print("Zielposition", zielposition)
         self.aktivieren_controler()
-        self.fahr_parameter_setzen()
+        self.fahr_parameter_setzen(geschwindigkeit, beschleunigung, verzoegerung)
         self.enable_set()
         self.enable_prüf()
         self.get_operation_mode()
@@ -337,15 +337,19 @@ class controler:
             byref(self.error_code)
             ) 
         
-    def fahr_parameter_setzen(self):
+    def fahr_parameter_setzen(self,geschwindigkeit, beschleunigung, verzoegerung):
         epos.VCS_SetPositionProfile(
             self.handle,
             self.node_id,
-            self.geschwindigkeit,
-            self.beschleunigung,
-            self.verzögerung,
+            geschwindigkeit,
+            beschleunigung,
+            verzoegerung,
             byref(self.error_code)
         )
+        print("Geschwindigkeit:",geschwindigkeit)
+        print("Beschleunigung:", beschleunigung)
+        print("Verzögerung:", verzoegerung)
+        print("Errorcode:", self.error_code)
         
     def fault_pruef(self):
         result = epos.VCS_GetFaultState(
