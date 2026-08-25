@@ -1,22 +1,17 @@
-import ctypes
-from ctypes import *
-from pathlib import Path
-import subprocess
+import snap7
 
-dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS2\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
+plc = snap7.client.Client()
 
-epos = ctypes.WinDLL(dll_path)
-try:
-    print(epos.VCS_GetVelocityIs)
-except Exception as e:
-    print(e)
+plc.connect(
+    "192.168.6.4",
+    0,
+    1
+)
 
-try:
-    print(epos.VCS_GetObject)
-except Exception as e:
-    print(e)
+print("Verbunden:", plc.get_connected())
 
-try:
-    print(epos.VCS_GetObjectEx)
-except Exception as e:
-    print(e)
+if plc.get_connected():
+    daten = plc.db_read(10, 0, 4)
+    print(daten)
+
+plc.disconnect()
