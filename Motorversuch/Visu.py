@@ -1,12 +1,11 @@
 import pygame
 from Epos import epos
-from sensor import sensor
+
 import time
-import matplotlib.pyplot as plt
 
 pygame.init()
 epos = epos()
-kistler = sensor()
+
 # Fenster
 WIDTH = 1000
 HEIGHT = 600
@@ -111,7 +110,7 @@ while running:
                 for i, button in enumerate(buttons):
                     if button.collidepoint(event.pos):
                         auswahl2 = positionen[i]
-                        print(motoren[i])
+                        print(positionen[i])
                         screen_state = 3
 
             # Fragen
@@ -122,10 +121,8 @@ while running:
             elif screen_state == 6:
                 for i, button in enumerate(buttons):
                     if button.collidepoint(event.pos):
-                        kistler.start_messung()
                         epos.programmablauf(auswahl1, auswahl2, positionen[i], antwort1, antwort2, antwort3)
-                        kistler.stop_messung()
-                        kistler.diagramm_anzeigen()
+                        print ("Programmablauf gestartet")
 
         # -------------------
         # Tastatur
@@ -324,14 +321,6 @@ while running:
         info_box = pygame.Rect(550,130,370,300)
         pygame.draw.rect(screen, (0, 158, 224), info_box)
         pygame.draw.rect(screen, (188, 207, 0), info_box, 2)
-        wert = kistler.sensor_auslesen()
-    
-        if wert is not None:
-            sensor_werte.append(wert)
-            zeit_werte.append(time.time() - startzeit)
-            sensorwert = wert
-        else:
-            sensorwert = 0
                         
         info1 = font.render(
             f"Motor: {auswahl1}",
@@ -368,17 +357,6 @@ while running:
             True,
             (255,255,255)    
         )   
-        
-        if sensorwert is not None:
-            kraft_text = f"Kraft: {sensorwert:.2f}"
-        else:
-            kraft_text = "Kraft: ---"
-
-        info7 = font.render(
-            kraft_text,
-            True,
-            (255,255,255)
-        )
                     
         screen.blit(info1, (570, 150))
         screen.blit(info2, (570, 190))
@@ -386,7 +364,7 @@ while running:
         screen.blit(info4, (570, 270))
         screen.blit(info5, (570, 310))
         screen.blit(info6, (570, 350))
-        screen.blit(info7, (570, 390))
+
         
                         
 
@@ -413,6 +391,3 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
-
-kistler.diagramm_anzeigen(zeit_werte, sensor_werte)
-

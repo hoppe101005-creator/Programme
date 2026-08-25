@@ -1,5 +1,6 @@
 import snap7
 from snap7.util import get_real
+from snap7.util import set_bool
 import matplotlib.pyplot as plt
 from collections import deque
 import time
@@ -23,7 +24,8 @@ class sensor:
         self.plc = snap7.client.Client()
 
         print("Verbinde mit SPS...")
-        self.plc.connect("192,168,6,4", 0, 1)
+        self.plc.connect("192.168.6.4", 0, 1)
+        self.data = self.plc.db_read(31, 0, 1)
 
         if self.plc.get_connected():
             print("Verbindung erfolgreich")
@@ -70,7 +72,7 @@ class sensor:
 
         try:
 
-            while True:
+            for i in range (200):
 
                 wert = self.sensor_auslesen()
 
@@ -108,6 +110,14 @@ class sensor:
         plt.title("Kistler Messung")
         plt.grid(True)
         plt.show()
+        
+    def kallibrieren(self):
+        set_bool(self.data, 0, 0, True)
+        self.plc.db_write(31, 0, self.data)
+        print("Kalibrieren = True")
+        set_bool(self.data, 0, 0, False)
+        self.plc.db_write(31, 0, self.data)
+        print("Kalibrieren = False")
 
 if __name__ == "__main__":
 
