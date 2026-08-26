@@ -1,4 +1,5 @@
 import snap7
+from controler import controler
 
 plc = snap7.client.Client()
 
@@ -15,3 +16,8 @@ if plc.get_connected():
     print(daten)
 
 plc.disconnect()
+
+controler1 = controler()
+controler1.open_device()
+print(hasattr(controler1, "VCS_GetVelocityIs"))
+

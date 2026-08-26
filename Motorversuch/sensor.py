@@ -24,6 +24,7 @@ class sensor:
         self.sensoradresse = sensoradresse
         self.zeitwerte = deque(maxlen=max_punkte)
         self.sensorwerte = deque(maxlen=max_punkte)
+        self.max_spannkraft =[]
         self.messen = 200
 
         self.plc = snap7.client.Client()

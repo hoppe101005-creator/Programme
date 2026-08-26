@@ -1,6 +1,7 @@
 import ctypes
 from ctypes import *
 from pathlib import Path
+import time
 
 dll_path = r"C:\Program Files (x86)\maxon motor ag\EPOS IDX\EPOS2\04 Programming\Windows DLL\LabVIEW\maxon EPOS\Resources\EposCmd64.dll"
 
@@ -12,6 +13,7 @@ class controler:
         self.enable = c_int()
         self.node_id = 1
         self.geschwindigkeit = 500
+        self.geschwindigkeit_werte = []
         self.beschleunigung = 10000
         self.verzögerung = 10000
         self.fault = c_int()
@@ -410,8 +412,13 @@ class controler:
 
         if result:
             print("Aktuelle Drehzahl:", current_velocity.value, "rpm")
-            return current_velocity.value
+            return int(current_velocity.value)
         else:
             print("Fehler:", self.error_code.value)
             return None
         
+    def get_drehzahl_max(self):
+        while True:
+            self.geschwindigkeit_werte.append(self.aktuelle_drehzahl_auslesen())
+            time.sleep(0.2)
+            return max(self.geschwindigkeit_werte)

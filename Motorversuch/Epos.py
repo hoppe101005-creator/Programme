@@ -24,6 +24,7 @@ class epos():
         self.controler1 = controler() 
         self.handle = self.controler1.open_device()
         self.drehzahl = None
+        self.programmablauf_gestartet = False
         self.error_code = self.controler1.error_code
         self.kistler = sensor(ip="192.168.6.4",rack=0, slot=1, db_nummer=31, sensoradresse=0)
 
@@ -38,7 +39,7 @@ class epos():
         
 
     def programmablauf(self,motor,lage_motor, fahren, geschwindigkeit, beschleunigung, verzoegerung):
-   
+
         if motor == "ACT":
             if lage_motor == "Offen":
                 self.lage_motor = self.act_offen
@@ -80,6 +81,8 @@ class epos():
                 self.controler1.nse_zu_position_bewegen(self.lage_motor[0], geschwindigkeit, beschleunigung, verzoegerung)
                 print("offen")
                 time.sleep(2)
+                
+            self.programmablauf_gestartet = True
                 
                 
     def get_drehzahl(self):        

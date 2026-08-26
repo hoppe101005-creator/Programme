@@ -1,6 +1,6 @@
 import pygame
 from Epos import epos
-
+import sys
 import time
 
 pygame.init()
@@ -21,6 +21,7 @@ screen_state = 1
 # Daten
 auswahl1 = ""
 auswahl2 = ""
+auswahl3 = ""
 
 antwort0 = None
 antwort1 = ""
@@ -78,6 +79,8 @@ ja_nein = [
 running = True
 
 while running:
+    if epos.controler1.fault == 1:
+        sys.exit()
 
     for event in pygame.event.get():
 
@@ -112,6 +115,18 @@ while running:
                         auswahl2 = positionen[i]
                         print(positionen[i])
                         screen_state = 3
+                        
+            # Bildschirm 7
+            elif screen_state == 7:
+                for i, button in enumerate(buttons_jn):
+                    if button.collidepoint(event.pos):
+                        auswahl3 = ja_nein[i]
+                        print(ja_nein[i])
+                        if auswahl3 == "Ja":
+                            screen_state = 6
+                        else:
+                            screen_state = 8
+            
 
             # Fragen
             elif screen_state in [3, 4, 5]:
@@ -351,23 +366,32 @@ while running:
             True,
             (255, 255, 255)
         )
-        
-                   
+                
         screen.blit(info1, (570, 150))
         screen.blit(info2, (570, 190))
         screen.blit(info3, (570, 230))
         screen.blit(info4, (570, 270))
         screen.blit(info5, (570, 310))
         
-        if epos.kistler.messung_abgeschlossen:
-            max_Spannkraft = max(epos.kistler.sensorwerte)
+        if epos.programmablauf_gestartet:
+            max_drehzahl = epos.controler1.get_drehzahl_max
             info6 = font.render(
-                f"Max. Spannkraft: {max_Spannkraft}",
+                f"Drehzahl: {max_drehzahl}",
+                True,
+                (255, 255, 255)
+            )
+                       
+            screen.blit(info6, (570, 350))
+        
+        if epos.kistler.messung_abgeschlossen:
+            epos.kistler.max_spannkraft.append(round(max(epos.kistler.sensorwerte),2))
+            info7 = font.render(
+                f"Max. Spannkraft: {epos.kistler.max_spannkraft [-1]}kN",
                 True,
                 (255, 255, 255)
             )
          
-            screen.blit(info6, (570, 350))
+            screen.blit(info7, (570, 390))
 
 
         
@@ -392,7 +416,33 @@ while running:
                 (button.x + 20,
                  button.y + 15)
             )
-
+            
+    elif screen_state == 7:
+        titel = font.render(
+                    "Möchten sie weiter mit dem NSE verfahren?", True, (255, 255, 255)
+                )
+        screen.blit(titel, (100, 50))
+        
+        for i, button in enumerate(buttons_jn):
+            pygame.draw.rect(screen, (0, 158, 224), button)
+        
+            txt = font.render(
+                ja_nein[i],
+                True,
+                (255, 255, 255)
+            )
+        
+            screen.blit(
+                txt,
+                (button.x + 20, button.y + 15)
+            )
+                    
+    elif screen_state == 8:
+            titel = font.render(
+                        "Das Wars!", True, (255, 255, 255)
+                    )
+            screen.blit(titel, (100, 50))  
+                         
     pygame.display.flip()
 
 pygame.quit()
