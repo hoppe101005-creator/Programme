@@ -10,45 +10,53 @@ class sensor:
 
     def __init__(
         self,
-        ip="192.168.0.,1",
+        ip="192.168.6.4",
         rack=0,
         slot=1,
-        db_nummer=10,
-        startadresse=0,
+        db_nummer=31,
+        sensoradresse=2,
         max_punkte=1000
     ):
-
+        self.ip = ip
+        self.rack = rack
+        self.slot = slot
         self.db_nummer = db_nummer
-        self.startadresse = startadresse
+        self.sensoradresse = sensoradresse
+        self.zeitwerte = deque(maxlen=max_punkte)
+        self.sensorwerte = deque(maxlen=max_punkte)
+        self.messen = 200
 
         self.plc = snap7.client.Client()
+        self.data = None
+        self.data_bool = None
+        self.messung_abgeschlossen = False
 
+    def verbinde_sps(self):
         print("Verbinde mit SPS...")
-        self.plc.connect("192.168.6.4", 0, 1)
-        self.data = self.plc.db_read(31, 0, 1)
+        self.plc.connect(self.ip, self.rack, self.slot)
 
         if self.plc.get_connected():
             print("Verbindung erfolgreich")
         else:
-            raise Exception("Verbindung zur SPS fehlgeschlagen")
-
-        self.zeitwerte = deque(maxlen=max_punkte)
-        self.sensorwerte = deque(maxlen=max_punkte)
+            raise Exception("Verbindung zur SPS fehlgeschlagen") 
 
     def sensor_auslesen(self):
         """
         Liest einen REAL-Wert aus der SPS.
         """
-
         try:
             daten = self.plc.db_read(
                 self.db_nummer,
-                self.startadresse,
+                self.sensoradresse,
                 4
             )
 
+            print("Daten:",daten)
+            
             wert = get_real(daten, 0)
 
+            print ("Wert:", wert)
+            
             return wert
 
         except Exception as e:
@@ -72,7 +80,7 @@ class sensor:
 
         try:
 
-            for i in range (200):
+            for i in range(self.messen):
 
                 wert = self.sensor_auslesen()
 
@@ -91,17 +99,19 @@ class sensor:
 
                     plt.draw()
                     plt.pause(0.05)
+                    wert = self.sensor_auslesen()
+                    print("Wert:", wert)
+                i+=1    
+                    
 
         except KeyboardInterrupt:
 
             print("Messung beendet")
 
-        finally:
-
-            self.plc.disconnect()
-            self.plc.destroy()
-
-            print("Verbindung zur SPS geschlossen")
+    def trenne_sps(self):
+        self.plc.disconnect()
+        self.plc.destroy()
+        print("Verbindung zur SPS geschlossen")
 
     def diagramm_anzeigen(self, zeit_werte, sensor_werte):
         plt.plot(zeit_werte, sensor_werte)
@@ -112,13 +122,26 @@ class sensor:
         plt.show()
         
     def kallibrieren(self):
-        set_bool(self.data, 0, 0, True)
-        self.plc.db_write(31, 0, self.data)
+        self.data_bool = self.plc.db_read(31, 4, 1)
+        print(self.data_bool)
+        set_bool(self.data_bool, 0, 0, True)
+        self.plc.db_write(31, 2, self.data_bool)
         print("Kalibrieren = True")
-        set_bool(self.data, 0, 0, False)
-        self.plc.db_write(31, 0, self.data)
+        time.sleep(1)
+        set_bool(self.data_bool, 0, 0, False)
+        self.plc.db_write(31, 2, self.data_bool)
         print("Kalibrieren = False")
 
+    def mess_ablauf(self):
+        self.verbinde_sps()
+        self.kallibrieren()
+        wert = None
+        wert = self.sensor_auslesen()
+        self.messung_starten()
+        print (wert)
+        self.trenne_sps()
+        self.messung_abgeschlossen = True
+        
 if __name__ == "__main__":
 
     sensor = sensor(
@@ -126,8 +149,8 @@ if __name__ == "__main__":
         rack=0,
         slot=1,
         db_nummer=31,
-        startadresse=0
+        sensoradresse=0
     )
 
-    sensor.messung_starten()
+    sensor.mess_ablauf()
     

@@ -307,7 +307,6 @@ while running:
     # Ergebnis
     #
     elif screen_state == 6:
-        aktuelle_drehzahl = epos.get_drehzahl()
 
         titel = font.render(
             "Um das NSE auf die Position zu bewegen, bitte Button drücken",
@@ -321,6 +320,7 @@ while running:
         info_box = pygame.Rect(550,130,370,300)
         pygame.draw.rect(screen, (0, 158, 224), info_box)
         pygame.draw.rect(screen, (188, 207, 0), info_box, 2)
+        
                         
         info1 = font.render(
             f"Motor: {auswahl1}",
@@ -352,18 +352,23 @@ while running:
             (255, 255, 255)
         )
         
-        info6 = font.render(
-            f"Drehzahl:{aktuelle_drehzahl}",
-            True,
-            (255,255,255)    
-        )   
-                    
+                   
         screen.blit(info1, (570, 150))
         screen.blit(info2, (570, 190))
         screen.blit(info3, (570, 230))
         screen.blit(info4, (570, 270))
         screen.blit(info5, (570, 310))
-        screen.blit(info6, (570, 350))
+        
+        if epos.kistler.messung_abgeschlossen:
+            max_Spannkraft = max(epos.kistler.sensorwerte)
+            info6 = font.render(
+                f"Max. Spannkraft: {max_Spannkraft}",
+                True,
+                (255, 255, 255)
+            )
+         
+            screen.blit(info6, (570, 350))
+
 
         
                         

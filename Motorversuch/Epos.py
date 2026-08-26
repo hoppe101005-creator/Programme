@@ -2,6 +2,7 @@ from ctypes import *
 from controler import controler
 import time
 from sensor import sensor
+import threading
 
 """850 Schritte zwischen anfangs und endlage"""
 """..........................."""
@@ -24,7 +25,7 @@ class epos():
         self.handle = self.controler1.open_device()
         self.drehzahl = None
         self.error_code = self.controler1.error_code
-        self.kistler = sensor()
+        self.kistler = sensor(ip="192.168.6.4",rack=0, slot=1, db_nummer=31, sensoradresse=0)
 
         self.controler1.geschwindigkeit = 0
         self.controler1.beschleunigung = 0
@@ -57,16 +58,13 @@ class epos():
                 print("geschlossen")
                 time.sleep(2)
             if fahren == "Gespannt":
+                print("Messthread gestartet")
                 print("Handle Programm:", self.handle)
                 print("Handle Controller:", self.controler1.handle)
                 print("Identisch:", self.handle == self.controler1.handle)
                 self.controler1.nse_zu_position_bewegen(self.lage_motor[2], geschwindigkeit, beschleunigung, verzoegerung)
                 print("gespannt")
-                self.kistler.kallibrieren()
-                self.kistler.messung_starten()
-                wert = None
-                wert = self.kistler.sensor_auslesen()
-                print (wert)
+                self.kistler.mess_ablauf()
                 loesen = True
             if fahren == "Wechsel" or loesen:
                 print("Handle Programm:", self.handle)
@@ -82,6 +80,7 @@ class epos():
                 self.controler1.nse_zu_position_bewegen(self.lage_motor[0], geschwindigkeit, beschleunigung, verzoegerung)
                 print("offen")
                 time.sleep(2)
+                
                 
     def get_drehzahl(self):        
         return self.controler1.aktuelle_drehzahl_auslesen() 

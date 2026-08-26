@@ -11,7 +11,7 @@ plc.connect(
 print("Verbunden:", plc.get_connected())
 
 if plc.get_connected():
-    daten = plc.db_read(10, 0, 4)
+    daten = plc.db_read(31, 3, 1)
     print(daten)
 
 plc.disconnect()
