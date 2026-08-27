@@ -17,7 +17,7 @@ if plc.get_connected():
 
 plc.disconnect()
 
-controler1 = controler()
-controler1.open_device()
-print(hasattr(controler1, "VCS_GetVelocityIs"))
+controler2 = controler()
+controler2.open_device()
+print(hasattr(controler2, "VCS_GetCurrentIsAveragedEx"))
 

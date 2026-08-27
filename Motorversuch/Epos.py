@@ -34,7 +34,7 @@ class epos():
     
         
         offen_wechsel = 8
-        wechsel_gespannt = 30
+        wechsel_gespannt = 31           #ab 26 fängt spannen an. 0,7kN/n
         gespannt_geschlossen = 71 - offen_wechsel - wechsel_gespannt
         
         self.u_fakt = None
