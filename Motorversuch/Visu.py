@@ -373,29 +373,26 @@ while running:
         screen.blit(info4, (570, 270))
         screen.blit(info5, (570, 310))
         
-        if epos.programmablauf_gestartet:
-            max_drehzahl = epos.controler1.get_drehzahl_max
+        if epos.kistler.messung_abgeschlossen:
+                    epos.kistler.max_spannkraft.append(round(max(epos.kistler.sensorwerte),2))
+                    info7 = font.render(
+                        f"Max. Spannkraft: {epos.kistler.max_spannkraft [-1]}kN",
+                        True,
+                        (255, 255, 255)
+                    )
+                 
+                    screen.blit(info7, (570, 390))
+        
+        if epos.kistler.messung_abgeschlossen:
+            durchschnitt_Spannkraft = sum(epos.kistler.max_spannkraft)/len(epos.kistler.max_spannkraft)
             info6 = font.render(
-                f"Drehzahl: {max_drehzahl}",
+                f"Durchschnitt: {durchschnitt_Spannkraft}",
                 True,
                 (255, 255, 255)
             )
                        
             screen.blit(info6, (570, 350))
-        
-        if epos.kistler.messung_abgeschlossen:
-            epos.kistler.max_spannkraft.append(round(max(epos.kistler.sensorwerte),2))
-            info7 = font.render(
-                f"Max. Spannkraft: {epos.kistler.max_spannkraft [-1]}kN",
-                True,
-                (255, 255, 255)
-            )
-         
-            screen.blit(info7, (570, 390))
-
-
-        
-                        
+                            
 
         for i, button in enumerate(buttons):
 

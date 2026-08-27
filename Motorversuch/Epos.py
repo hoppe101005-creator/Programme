@@ -31,58 +31,71 @@ class epos():
         self.controler1.geschwindigkeit = 0
         self.controler1.beschleunigung = 0
         self.controler1.verzoegerung = 0
+    
         
-        self.act_offen = (0,-100,-840,-850)
-        self.act_wechsel = (100, 0, -740, -750)
-        self.act_gespannt = (750, 700, 0, -100)
-        self.act_geschlossen = (850, 750, 10, 0)
+        offen_wechsel = 8
+        wechsel_gespannt = 30
+        gespannt_geschlossen = 71 - offen_wechsel - wechsel_gespannt
+        
+        self.u_fakt = None
+        self.offen = (0, -offen_wechsel, -offen_wechsel - wechsel_gespannt, -offen_wechsel - wechsel_gespannt - gespannt_geschlossen)
+        self.wechsel = (offen_wechsel, 0, -wechsel_gespannt, -wechsel_gespannt-gespannt_geschlossen)
+        self.gespannt = (offen_wechsel + wechsel_gespannt, wechsel_gespannt, 0 , -gespannt_geschlossen)
+        self.geschlossen = (offen_wechsel + wechsel_gespannt + gespannt_geschlossen, wechsel_gespannt + gespannt_geschlossen, gespannt_geschlossen, 0)
         
 
     def programmablauf(self,motor,lage_motor, fahren, geschwindigkeit, beschleunigung, verzoegerung):
 
         if motor == "ACT":
-            if lage_motor == "Offen":
-                self.lage_motor = self.act_offen
-            elif lage_motor == "Wechsel":
-                self.lage_motor = self.act_wechsel
-            elif lage_motor == "Gespannt":
-                self.lage_motor = self.act_gespannt
-            elif lage_motor == "Geschlossen":
-                self.lage_motor = self.act_geschlossen
+            self.u_fakt = 12
+        elif motor == "DeltaLine" or motor == "Maxon":
+            self.u_fakt = 24
+        elif motor == "Faulhaber":
+            self.u_fakt == 21
+            
+        if lage_motor == "Offen":
+            self.lage_motor = self.offen
+        elif lage_motor == "Wechsel":
+            self.lage_motor = self.wechsel
+        elif lage_motor == "Gespannt":
+            self.lage_motor = self.gespannt
+        elif lage_motor == "Geschlossen":
+            self.lage_motor = self.geschlossen
 
-            loesen = False
-            if fahren == "Geschlossen":
-                print("Handle Programm:", self.handle)
-                print("Handle Controller:", self.controler1.handle)
-                print("Identisch:", self.handle == self.controler1.handle)
-                self.controler1.nse_zu_position_bewegen(self.lage_motor[3], geschwindigkeit, beschleunigung, verzoegerung)
-                print("geschlossen")
-                time.sleep(2)
-            if fahren == "Gespannt":
-                print("Messthread gestartet")
-                print("Handle Programm:", self.handle)
-                print("Handle Controller:", self.controler1.handle)
-                print("Identisch:", self.handle == self.controler1.handle)
-                self.controler1.nse_zu_position_bewegen(self.lage_motor[2], geschwindigkeit, beschleunigung, verzoegerung)
-                print("gespannt")
-                self.kistler.mess_ablauf()
-                loesen = True
-            if fahren == "Wechsel" or loesen:
-                print("Handle Programm:", self.handle)
-                print("Handle Controller:", self.controler1.handle)
-                print("Identisch:", self.handle == self.controler1.handle)
-                self.controler1.nse_zu_position_bewegen(self.lage_motor[1], geschwindigkeit, beschleunigung, verzoegerung)
-                print("wechsel")
-                time.sleep(2)
-            if fahren == "Offen":
-                print("Handle Programm:", self.handle)
-                print("Handle Controller:", self.controler1.handle)
-                print("Identisch:", self.handle == self.controler1.handle)
-                self.controler1.nse_zu_position_bewegen(self.lage_motor[0], geschwindigkeit, beschleunigung, verzoegerung)
-                print("offen")
-                time.sleep(2)
-                
-            self.programmablauf_gestartet = True
+        loesen = False
+        if fahren == "Geschlossen":
+            print("Handle Programm:", self.handle)
+            print("Handle Controller:", self.controler1.handle)
+            print("Identisch:", self.handle == self.controler1.handle)
+            self.controler1.nse_zu_position_bewegen(self.lage_motor[3]*self.u_fakt, geschwindigkeit, beschleunigung, verzoegerung)
+            print("geschlossen")
+            time.sleep(2)
+        if fahren == "Gespannt":
+            print("Messthread gestartet")
+            print("Handle Programm:", self.handle)
+            print("Handle Controller:", self.controler1.handle)
+            print("Identisch:", self.handle == self.controler1.handle)
+            self.controler1.nse_zu_position_bewegen(self.lage_motor[2]*self.u_fakt, geschwindigkeit, beschleunigung, verzoegerung)
+            print("gespannt")
+            self.kistler.mess_ablauf()
+            loesen = True
+            self.kistler.messung_abgeschlossen = False
+        if fahren == "Wechsel" or loesen:
+            print("Handle Programm:", self.handle)
+            print("Handle Controller:", self.controler1.handle)
+            print("Identisch:", self.handle == self.controler1.handle)
+            self.controler1.nse_zu_position_bewegen(self.lage_motor[1]*self.u_fakt, geschwindigkeit, beschleunigung, verzoegerung)
+            print("wechsel")
+            time.sleep(2)
+        if fahren == "Offen":
+            print("Handle Programm:", self.handle)
+            print("Handle Controller:", self.controler1.handle)
+            print("Identisch:", self.handle == self.controler1.handle)
+            self.controler1.nse_zu_position_bewegen(self.lage_motor[0]*self.u_fakt, geschwindigkeit, beschleunigung, verzoegerung)
+            print("offen")
+            time.sleep(2)
+                            
+        self.programmablauf_gestartet = True
                 
                 
     def get_drehzahl(self):        

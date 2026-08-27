@@ -31,6 +31,7 @@ class sensor:
         self.data = None
         self.data_bool = None
         self.messung_abgeschlossen = False
+        self.anzahl_messungen = 0
 
     def verbinde_sps(self):
         print("Verbinde mit SPS...")
@@ -142,6 +143,7 @@ class sensor:
         print (wert)
         self.trenne_sps()
         self.messung_abgeschlossen = True
+        time.sleep(0.5)
         
 if __name__ == "__main__":
 
