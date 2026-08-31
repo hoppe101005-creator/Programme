@@ -34,10 +34,10 @@ class epos():
     
         
         offen_wechsel = 8
-        wechsel_gespannt = 31           #ab 26 fängt spannen an. 0,7kN/n
+        wechsel_gespannt = 30           #ab 26 fängt spannen an. 0,7kN/n
         gespannt_geschlossen = 71 - offen_wechsel - wechsel_gespannt
         
-        self.u_fakt = None
+        self.u_fakt = 42
         self.offen = (0, -offen_wechsel, -offen_wechsel - wechsel_gespannt, -offen_wechsel - wechsel_gespannt - gespannt_geschlossen)
         self.wechsel = (offen_wechsel, 0, -wechsel_gespannt, -wechsel_gespannt-gespannt_geschlossen)
         self.gespannt = (offen_wechsel + wechsel_gespannt, wechsel_gespannt, 0 , -gespannt_geschlossen)
@@ -48,10 +48,14 @@ class epos():
 
         if motor == "ACT":
             self.u_fakt = 12
-        elif motor == "DeltaLine" or motor == "Maxon":
+        elif motor == "Maxon":
+            self.u_fakt = -48
+        elif motor == "DeltaLine":
             self.u_fakt = 24
         elif motor == "Faulhaber":
             self.u_fakt == 21
+        
+        print(type(self.u_fakt))
             
         if lage_motor == "Offen":
             self.lage_motor = self.offen
