@@ -1,8 +1,11 @@
 # T4_1000 Alexander Hoppe
-    Test von Elektromotoren als Alternative zum Bestehenden Motor in Kraftspannblöcken und Nullpunktspannsystemen
+    Test von Elektromotoren als Alternative zum Bestehenden Motor in Kraft-
+    spannblöcken und Nullpunktspannsystemen
 
 # Benutzungsfreigabe
-    Dieses Repository darf ausschließlich zur Bewertung durch die DHBW Ravensburg oder zur weiteren Arbeit durch die H.-D. SCHUNK GmbH & Co. Spanntechnik KG. gelesen und benutzt werden. 
+    Dieses Repository darf ausschließlich zur Bewertung durch die DHBW 
+    Ravensburg oder zur weiteren Arbeit durch die H.-D. SCHUNK GmbH & 
+    Co. Spanntechnik KG. gelesen und benutzt werden. 
 
 # Gliederung des Repositories
     3D Druckdateien Vorrichtung:
@@ -12,13 +15,17 @@
         Hier liegen alle Datenblätter, die im Laufe der Arbeit benutzt wurden
 
     Dokumentation:
-        Hier liegt die eigentliche T4_1000 als PDF und eine Übersicht der Motoren, die während der Arbeit in der engeren auswahl waren
+        Hier liegen die eigentliche T4_1000 mit beiden Praxisreflektionen als 
+        PDF und eine Übersicht der Motoren, die während der Arbeit in der 
+        engeren auswahl waren
 
     Programme:
-        Hier liegt das vollständige Programm zur ansteuerung der verschiedenen Motoren über die EPOS4-Steuerung
+        Hier liegt das vollständige Programm zur ansteuerung der verschie-
+        denen Motoren über die EPOS4-Steuerung
     
     Rohdaten Messung sofern aufgenommen:
-        Hier sind Screenshots aus dem Pythonprogramm, Aufnahmen der Ströme mit dem Oszilloskop und eine Zusammenfassung aller Messdaten
+        Hier sind Screenshots aus dem Pythonprogramm, Aufnahmen der Ströme 
+        mit dem Oszilloskop und eine Zusammenfassung aller Messdaten
 
 # Voraussetzungen
     Software:
@@ -35,5 +42,6 @@
         Netzgerät 24V
 
 # Verwendung
-    Clone das Repository und arbeite ausschließlich in deinem lokalen Repository. Passe die lokalen Speicherorte im Code an.
+    Clone das Repository und arbeite ausschließlich in deinem lokalen 
+    Repository. Passe die lokalen Speicherorte im Code an.
     Baue den Versuch auf und Starte das Programm mit der Datei Visu.py.
